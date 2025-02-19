@@ -13,7 +13,7 @@ $(() => {
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
             data.splice(100);
             // console.log(data[1]);
-            // populateCards(data);
+            populateCards(data);
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
         } catch (error) {
             alert("something went wrong...")

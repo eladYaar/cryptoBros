@@ -5,6 +5,7 @@ $(() => {
         try {
             const data = await fetchData(url);
             data.splice(100);
+            populateCards(data);
         }
         catch (error) {
             alert("something went wrong...");
