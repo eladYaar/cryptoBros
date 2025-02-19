@@ -1,0 +1,93 @@
+/* header */
+header {
+    padding: 1vh;
+    background-color: rgb(30, 48, 60);
+    color: rgb(249, 249, 249);
+}
+
+header>img {
+    max-height: 150px;
+}
+
+header>h1 {
+    display: inline;
+    font-size: xxx-large;
+    align-self: center;
+}
+
+/* ======================================= */
+/* nav */
+nav {
+    margin-left: 5vw;
+    margin-right: 5vw;
+    background-color: white;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+}
+nav .collapsing, nav .collapse {
+    margin-top: 2vh;
+}
+nav #homeBtn{
+    background-color: rgb(68, 109, 136);
+}
+
+nav .nav-link{
+    color: rgb(68, 109, 136);
+}
+
+/* ======================================= */
+
+/* card container */
+#cardContainerRow {
+    justify-content: center;
+}
+.container {
+    display: grid;
+    /* grid-template-columns: repeat(3,1fr); */
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0;
+    row-gap: 0;
+    column-gap: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container>.card {
+    margin: 0;
+    padding: 0;
+}
+/* ======================================= */
+/* toggle Button */
+.form-check-input {
+    transform: scale(1.5);
+}
+/* ======================================= */
+/* collapse */
+.collapse-container {
+    position: relative;
+}
+.card .collapse,.card .collapsing {
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card img {
+    max-width: 40px;
+}
+.btn-more-info {
+    background-color: rgb(68, 109, 136) !important;
+    border: rgb(68, 109, 136) 1px solid !important;
+}
+/* ======================================= */
+body {
+    background-color: rgb(248, 249, 250) !important;
+}
+
+.col-auto .spinner-grow {
+    font-size: large;
+    background-color: rgb(68, 109, 136);
+    width: 5rem !important; 
+    height: 5rem !important;
+}
