@@ -61,6 +61,9 @@ nav .nav-link {
     padding: 0;
 }
 
+.card .card-text {
+    min-height: 5vh;
+}
 /* ======================================= */
 /* toggle Button */
 .form-check-input {

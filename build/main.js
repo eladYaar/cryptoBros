@@ -47,23 +47,38 @@ $(() => {
             return false;
         }
     }
+    function searchIsLoading(isLoading) {
+        if (isLoading) {
+            $("#searchForm button").html(`Search`);
+            $("#searchForm button").prop("disabled", false);
+        }
+        else {
+            $("#searchForm button").html(`
+                <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+                <span role="status">Loading...</span>
+                `);
+            $("#searchForm button").prop("disabled", true);
+        }
+    }
     $("form#searchForm").on("submit", function (event) {
+        searchIsLoading(true);
         event.preventDefault();
-        const searchTerm = $("input#searchBox").val();
+        const searchTerm = $("input#searchBox").val().toString().toLowerCase();
         console.log(searchTerm);
-        const answerCoin = globalCoinList.find((coin) => coin.symbol === searchTerm);
-        if (!answerCoin) {
+        const answerCoins = globalCoinList.filter((coin) => (coin.symbol).toLowerCase().indexOf(searchTerm) >= 0);
+        if (!answerCoins) {
             alert(`couldn't find Coin '${searchTerm}'`);
             return;
         }
-        populateCards([answerCoin]);
+        populateCards(answerCoins.sort((a, b) => a.symbol.length - b.symbol.length));
         $(this).children("input").val('');
+        searchIsLoading(false);
     });
     $("#cardContainerRow").on("click", "a.btn-more-info", async function () {
         if ($(this).hasClass("collapsed")) {
             return;
         }
-        const now = Date.now();
+        let now = Date.now();
         const loadedData = loadDataFromLocal($(this).attr("aria-controls"));
         let thisCoin;
         if (!loadedData || now - loadedData.lastLoadedTime > 120000) {
@@ -78,6 +93,7 @@ $(() => {
         }
         else {
             thisCoin = loadedData.thisCoin;
+            now = loadedData.lastLoadedTime;
             console.log("Loaded From LocalStorage");
         }
         const key = thisCoin.id;
@@ -103,15 +119,16 @@ $(() => {
             `);
     });
     function addCommasToNumber(num) {
-        const stringNum = num.toString();
-        if (num < 100) {
-            return stringNum;
+        if (!num && num !== 0) {
+            return " Data Not Found";
         }
+        const stringsNum = num.toString().split(".");
         const returnStringArr = [];
-        for (let i = stringNum.length; i > 0; i -= 3) {
-            returnStringArr.unshift(stringNum.substring(i - 3, i));
+        for (let i = stringsNum[0].length; i > 0; i -= 3) {
+            returnStringArr.unshift(stringsNum[0].substring(i - 3, i));
         }
-        return returnStringArr.join(",");
+        stringsNum[0] = returnStringArr.join(",");
+        return stringsNum.join(".");
     }
     function populateCards(data) {
         let cardHtml = "";
