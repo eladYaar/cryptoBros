@@ -20,9 +20,9 @@ $(() => {
             globalCoinList = await fetchData(apiUrl) as ICoinShort[];
 
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-            globalCoinList.splice(100);
+            // globalCoinList.splice(100);
             // console.log(data[1]);
-            // populateCards(data);
+            populateCards(globalCoinList);
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
             
         } catch (error) {

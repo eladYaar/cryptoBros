@@ -13,7 +13,7 @@ $(() => {
     async function onPageLoad(apiUrl) {
         try {
             globalCoinList = await fetchData(apiUrl);
-            globalCoinList.splice(100);
+            populateCards(globalCoinList);
         }
         catch (error) {
             alert("something went wrong...");
