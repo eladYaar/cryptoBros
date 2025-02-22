@@ -8,12 +8,12 @@ $(() => {
             'x-cg-demo-api-key': coinGeckoAPIKey,
         }
     };
+    let globalCoinList;
     onPageLoad(coinApiUrl + "list");
-    async function onPageLoad(url) {
+    async function onPageLoad(apiUrl) {
         try {
-            const data = await fetchData(url);
-            data.splice(100);
-            populateCards(data);
+            globalCoinList = await fetchData(apiUrl);
+            globalCoinList.splice(100);
         }
         catch (error) {
             alert("something went wrong...");
@@ -37,8 +37,8 @@ $(() => {
         const json = JSON.stringify(storageObj);
         localStorage.setItem(key, json);
     }
-    function loadDataFromLocal(key) {
-        const json = localStorage.getItem(key);
+    function loadDataFromLocal(localStorageKey) {
+        const json = localStorage.getItem(localStorageKey);
         if (json) {
             return JSON.parse(json);
         }
@@ -46,6 +46,18 @@ $(() => {
             return false;
         }
     }
+    $("form#searchForm").on("submit", function (event) {
+        event.preventDefault();
+        const searchTerm = $("input#searchBox").val();
+        console.log(searchTerm);
+        const answerCoin = globalCoinList.find((coin) => coin.symbol === searchTerm);
+        if (!answerCoin) {
+            alert(`couldn't find Coin '${searchTerm}'`);
+            return;
+        }
+        populateCards([answerCoin]);
+        $(this).children("input").val('');
+    });
     $("#cardContainerRow").on("click", "a.btn-more-info", async function () {
         if ($(this).hasClass("collapsed")) {
             return;

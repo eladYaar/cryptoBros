@@ -5,30 +5,31 @@ import { IStorageObj } from "./istorageObj";
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
     const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
-    const optionsForFetch = { 
+    const optionsForFetch = {
         method: 'GET',
-        headers: { 
+        headers: {
             accept: 'application/json',
-            'x-cg-demo-api-key': coinGeckoAPIKey, 
-        } 
+            'x-cg-demo-api-key': coinGeckoAPIKey,
+        }
     };
-
-
+    let globalCoinList: ICoinShort[];
 
     onPageLoad(coinApiUrl + "list");
-    async function onPageLoad(url): Promise<void> {
+    async function onPageLoad(apiUrl): Promise<void> {
         try {
-            const data = await fetchData(url) as ICoinShort[];
+            globalCoinList = await fetchData(apiUrl) as ICoinShort[];
 
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-            data.splice(100);
+            globalCoinList.splice(100);
             // console.log(data[1]);
-            populateCards(data);
+            // populateCards(data);
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
+            
         } catch (error) {
             alert("something went wrong...")
         }
     }
+
     async function fetchData(url: string): Promise<ICoinShort[] | ICoinLong> {
         try {
             const response = await fetch(url, optionsForFetch);
@@ -48,14 +49,31 @@ $(() => {
         localStorage.setItem(key, json);
     }
 
-    function loadDataFromLocal(key): IStorageObj | boolean {
-        const json: string | undefined = localStorage.getItem(key);
+    function loadDataFromLocal(localStorageKey): IStorageObj | boolean {
+        const json: string | undefined = localStorage.getItem(localStorageKey);
         if (json) {
             return JSON.parse(json);
         } else {
             return false;
         }
     }
+
+
+
+    $("form#searchForm").on("submit", function (event) {
+        event.preventDefault();
+        const searchTerm = $("input#searchBox").val();
+        console.log(searchTerm);
+        
+        const answerCoin = globalCoinList.find((coin) => coin.symbol === searchTerm);
+        if (!answerCoin){
+            alert(`couldn't find Coin '${searchTerm}'`); 
+            return;
+        }
+        populateCards([answerCoin]); 
+        $(this).children("input").val('');
+    });
+
 
     $("#cardContainerRow").on("click", "a.btn-more-info", async function (): Promise<void> {
         // console.log(this);
@@ -149,8 +167,5 @@ $(() => {
         }
         $("#cardContainerRow").html(cardHtml);
     }
-
-
-
 });
 
