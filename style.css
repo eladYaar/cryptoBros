@@ -82,8 +82,9 @@ nav .nav-link {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card img {
+.card .coin-thumbnail {
     max-width: 40px;
+    margin-bottom: 10px;
 }
 
 .btn-more-info {

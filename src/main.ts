@@ -20,15 +20,16 @@ $(() => {
             globalCoinList = await fetchData(apiUrl) as ICoinShort[];
 
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-            // globalCoinList.splice(100);
+            globalCoinList.splice(100);
             // console.log(data[1]);
             populateCards(globalCoinList);
             // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-            
+
         } catch (error) {
             alert("something went wrong...")
         }
     }
+
 
     async function fetchData(url: string): Promise<ICoinShort[] | ICoinLong> {
         try {
@@ -64,13 +65,13 @@ $(() => {
         event.preventDefault();
         const searchTerm = $("input#searchBox").val();
         console.log(searchTerm);
-        
+
         const answerCoin = globalCoinList.find((coin) => coin.symbol === searchTerm);
-        if (!answerCoin){
-            alert(`couldn't find Coin '${searchTerm}'`); 
+        if (!answerCoin) {
+            alert(`couldn't find Coin '${searchTerm}'`);
             return;
         }
-        populateCards([answerCoin]); 
+        populateCards([answerCoin]);
         $(this).children("input").val('');
     });
 
@@ -102,25 +103,37 @@ $(() => {
             thisCoin,
             lastLoadedTime: now,
         };
-
         saveDataToLocal(storageObj, key);
         $(`#${thisCoin.id}`).children().children().html(
             `
-                <img src="${thisCoin.image.small}">
+                <img class="coin-thumbnail" src="${thisCoin.image.small}">
                 <br>
-                USD Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ ${thisCoin.market_data.current_price.usd}
+                USD Value: $${addCommasToNumber(thisCoin.market_data.current_price.usd)}
                 <br>
-                USD Market Cap: $ ${thisCoin.market_data.market_cap.usd}
+                USD Market Cap: $${addCommasToNumber(thisCoin.market_data.market_cap.usd)}
                 <hr>
-                EUR Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;€ ${thisCoin.market_data.current_price.eur}
+                EUR Value: €${addCommasToNumber(thisCoin.market_data.current_price.eur)}
                 <br>
-                EUR Market Cap: € ${thisCoin.market_data.market_cap.eur}
+                EUR Market Cap: €${addCommasToNumber(thisCoin.market_data.market_cap.eur)}
                 <hr>
-                ILS Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;₪ ${thisCoin.market_data.current_price.ils}
+                ILS Value: ₪${addCommasToNumber(thisCoin.market_data.current_price.ils)}
                 <br>
-                ILS Market Cap: ₪ ${thisCoin.market_data.market_cap.ils}
+                ILS Market Cap: ₪${addCommasToNumber(thisCoin.market_data.market_cap.ils)}
             `);
     });
+
+    function addCommasToNumber(num: number): string {
+        const stringNum = num.toString();
+        if (num < 100) {
+            return stringNum;
+        } 
+        const returnStringArr: string[] = [];
+        for (let i = stringNum.length; i > 0; i -= 3) {
+            returnStringArr.unshift(stringNum.substring(i - 3, i));
+        }
+        return returnStringArr.join(",");
+    }
+
 
     function populateCards(data: ICoinShort[]): void {
         let cardHtml = "";

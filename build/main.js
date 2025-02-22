@@ -13,6 +13,7 @@ $(() => {
     async function onPageLoad(apiUrl) {
         try {
             globalCoinList = await fetchData(apiUrl);
+            globalCoinList.splice(100);
             populateCards(globalCoinList);
         }
         catch (error) {
@@ -86,21 +87,32 @@ $(() => {
         };
         saveDataToLocal(storageObj, key);
         $(`#${thisCoin.id}`).children().children().html(`
-                <img src="${thisCoin.image.small}">
+                <img class="coin-thumbnail" src="${thisCoin.image.small}">
                 <br>
-                USD Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ ${thisCoin.market_data.current_price.usd}
+                USD Value: $${addCommasToNumber(thisCoin.market_data.current_price.usd)}
                 <br>
-                USD Market Cap: $ ${thisCoin.market_data.market_cap.usd}
+                USD Market Cap: $${addCommasToNumber(thisCoin.market_data.market_cap.usd)}
                 <hr>
-                EUR Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;€ ${thisCoin.market_data.current_price.eur}
+                EUR Value: €${addCommasToNumber(thisCoin.market_data.current_price.eur)}
                 <br>
-                EUR Market Cap: € ${thisCoin.market_data.market_cap.eur}
+                EUR Market Cap: €${addCommasToNumber(thisCoin.market_data.market_cap.eur)}
                 <hr>
-                ILS Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;₪ ${thisCoin.market_data.current_price.ils}
+                ILS Value: ₪${addCommasToNumber(thisCoin.market_data.current_price.ils)}
                 <br>
-                ILS Market Cap: ₪ ${thisCoin.market_data.market_cap.ils}
+                ILS Market Cap: ₪${addCommasToNumber(thisCoin.market_data.market_cap.ils)}
             `);
     });
+    function addCommasToNumber(num) {
+        const stringNum = num.toString();
+        if (num < 100) {
+            return stringNum;
+        }
+        const returnStringArr = [];
+        for (let i = stringNum.length; i > 0; i -= 3) {
+            returnStringArr.unshift(stringNum.substring(i - 3, i));
+        }
+        return returnStringArr.join(",");
+    }
     function populateCards(data) {
         let cardHtml = "";
         for (const coin of data) {
