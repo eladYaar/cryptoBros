@@ -24,14 +24,17 @@ nav {
     margin-top: 1vh;
     margin-bottom: 2vh;
 }
-nav .collapsing, nav .collapse {
+
+nav .collapsing,
+nav .collapse {
     margin-top: 2vh;
 }
-nav #homeBtn{
+
+nav #homeBtn {
     background-color: rgb(68, 109, 136);
 }
 
-nav .nav-link{
+nav .nav-link {
     color: rgb(68, 109, 136);
 }
 
@@ -41,6 +44,7 @@ nav .nav-link{
 #cardContainerRow {
     justify-content: center;
 }
+
 .container {
     display: grid;
     /* grid-template-columns: repeat(3,1fr); */
@@ -56,38 +60,60 @@ nav .nav-link{
     margin: 0;
     padding: 0;
 }
+
 /* ======================================= */
 /* toggle Button */
 .form-check-input {
     transform: scale(1.5);
 }
+
 /* ======================================= */
 /* collapse */
 .collapse-container {
     position: relative;
 }
-.card .collapse,.card .collapsing {
+
+.card .collapse,
+.card .collapsing {
     position: absolute;
     z-index: 1000;
     background: white;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .card img {
     max-width: 40px;
 }
+
 .btn-more-info {
     background-color: rgb(68, 109, 136) !important;
     border: rgb(68, 109, 136) 1px solid !important;
 }
+
 /* ======================================= */
 body {
     background-color: rgb(248, 249, 250) !important;
 }
 
+#pageLoadSpinnerDiv>.spinner-grow {
+    width: 7rem !important;
+    height: 7rem !important;
+    position: absolute;
+    left: 44%;
+    top: 35%;
+    background-color: rgb(68, 109, 136);
+    justify-self: center;
+}
+
 .col-auto .spinner-grow {
     font-size: large;
     background-color: rgb(68, 109, 136);
-    width: 5rem !important; 
+    width: 5rem !important;
     height: 5rem !important;
+}
+/* ================================================ */
+/* attribution */
+#attribution {
+    margin-right:40px ;
 }

@@ -56,10 +56,20 @@
                 </div>
             </div>
         </nav>
+        <div id="attribution" class="text-muted text-end">
+            Powered by 
+            <a href="https://www.coingecko.com/en/api">CoinGecko API</a>
+        </div>
         <div class="container d-flex flex-wrap p-0">
             <div id="cardContainerRow" class="row g-0 row-cols-3">
+                <div id="pageLoadSpinnerDiv"  class="text-center">
+                    <div class="spinner-grow" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+
                 <!-- card START -->
-                <div class="col-auto">
+                <!-- <div class="col-auto">
                     <div class="card position-relative" style="width: 18rem;">
                         <div class="card-body">
                             <div
@@ -69,7 +79,6 @@
                             </div>
                             <h5 class="card-title">BTC</h5>
                             <p class="card-text">bitcoin</p>
-                            <!-- Button and collapse START -->
                             <span class="collapse-container">
                                 <p class="d-inline-flex gap-1">
                                     <a class="btn btn-primary btn-more-info"
@@ -83,7 +92,8 @@
                                         <div class="collapse multi-collapse"
                                             id="bitcoin">
                                             <div class="card card-body">
-                                                <div class="text-center">
+                                                <div id=""
+                                                    class="text-center">
                                                     <div
                                                         class="spinner-grow text-primary"
                                                         role="status">
@@ -95,10 +105,9 @@
                                     </div>
                                 </div>
                             </span>
-                            <!-- Button and collapse END -->
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- card END -->
             </div>
         </div>

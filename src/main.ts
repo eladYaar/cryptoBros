@@ -4,6 +4,16 @@ import { IStorageObj } from "./istorageObj";
 
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
+    const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
+    const optionsForFetch = { 
+        method: 'GET',
+        headers: { 
+            accept: 'application/json',
+            'x-cg-demo-api-key': coinGeckoAPIKey, 
+        } 
+    };
+
+
 
     onPageLoad(coinApiUrl + "list");
     async function onPageLoad(url): Promise<void> {
@@ -21,7 +31,10 @@ $(() => {
     }
     async function fetchData(url: string): Promise<ICoinShort[] | ICoinLong> {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, optionsForFetch);
+            if (!response.ok) {
+                throw new Error('Failed to retrieve data from the API');
+            }
             const data = await response.json();
             return data;
         } catch (error) {
@@ -30,12 +43,12 @@ $(() => {
         }
     }
 
-    function saveDataToLocal(storageObj:object): void {
+    function saveDataToLocal(storageObj: object, key: string): void {
         const json = JSON.stringify(storageObj);
-        localStorage.setItem("storageObj",json);    
+        localStorage.setItem(key, json);
     }
 
-    function loadDataFromLocal(key): IStorageObj | boolean{
+    function loadDataFromLocal(key): IStorageObj | boolean {
         const json: string | undefined = localStorage.getItem(key);
         if (json) {
             return JSON.parse(json);
@@ -48,9 +61,9 @@ $(() => {
         // console.log(this);
         if ($(this).hasClass("collapsed")) {
             return;
-        }       
+        }
         const now: number = Date.now();
-        const loadedData = loadDataFromLocal("storageObj");
+        const loadedData = loadDataFromLocal($(this).attr("aria-controls"));
         let thisCoin: ICoinLong;
 
         if (!loadedData || now - (loadedData as IStorageObj).lastLoadedTime > 120000) {
@@ -60,19 +73,19 @@ $(() => {
                     class="spinner-grow text-primary"
                     role="status">
                     <span class="visually-hidden">Loading...</span>
-                </div>`);    
+                </div>`);
             console.log("Loaded From API");
         } else {
             thisCoin = (loadedData as IStorageObj).thisCoin;
-            console.log("Loaded From LocalStorage"); 
+            console.log("Loaded From LocalStorage");
         }
-        
+        const key = thisCoin.id;
         const storageObj = {
             thisCoin,
             lastLoadedTime: now,
         };
-        
-        saveDataToLocal(storageObj);
+
+        saveDataToLocal(storageObj, key);
         $(`#${thisCoin.id}`).children().children().html(
             `
                 <img src="${thisCoin.image.small}">
@@ -80,13 +93,11 @@ $(() => {
                 USD Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ ${thisCoin.market_data.current_price.usd}
                 <br>
                 USD Market Cap: $ ${thisCoin.market_data.market_cap.usd}
-                <br>
-                <br>
+                <hr>
                 EUR Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;€ ${thisCoin.market_data.current_price.eur}
                 <br>
                 EUR Market Cap: € ${thisCoin.market_data.market_cap.eur}
-                <br>
-                <br>
+                <hr>
                 ILS Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;₪ ${thisCoin.market_data.current_price.ils}
                 <br>
                 ILS Market Cap: ₪ ${thisCoin.market_data.market_cap.ils}

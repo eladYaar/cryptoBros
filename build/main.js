@@ -1,5 +1,13 @@
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
+    const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
+    const optionsForFetch = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            'x-cg-demo-api-key': coinGeckoAPIKey,
+        }
+    };
     onPageLoad(coinApiUrl + "list");
     async function onPageLoad(url) {
         try {
@@ -13,7 +21,10 @@ $(() => {
     }
     async function fetchData(url) {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, optionsForFetch);
+            if (!response.ok) {
+                throw new Error('Failed to retrieve data from the API');
+            }
             const data = await response.json();
             return data;
         }
@@ -22,9 +33,9 @@ $(() => {
             alert("Oops! something went wrong...");
         }
     }
-    function saveDataToLocal(storageObj) {
+    function saveDataToLocal(storageObj, key) {
         const json = JSON.stringify(storageObj);
-        localStorage.setItem("storageObj", json);
+        localStorage.setItem(key, json);
     }
     function loadDataFromLocal(key) {
         const json = localStorage.getItem(key);
@@ -40,7 +51,7 @@ $(() => {
             return;
         }
         const now = Date.now();
-        const loadedData = loadDataFromLocal("storageObj");
+        const loadedData = loadDataFromLocal($(this).attr("aria-controls"));
         let thisCoin;
         if (!loadedData || now - loadedData.lastLoadedTime > 120000) {
             thisCoin = await fetchData(coinApiUrl + $(this).attr("aria-controls"));
@@ -56,24 +67,23 @@ $(() => {
             thisCoin = loadedData.thisCoin;
             console.log("Loaded From LocalStorage");
         }
+        const key = thisCoin.id;
         const storageObj = {
             thisCoin,
             lastLoadedTime: now,
         };
-        saveDataToLocal(storageObj);
+        saveDataToLocal(storageObj, key);
         $(`#${thisCoin.id}`).children().children().html(`
                 <img src="${thisCoin.image.small}">
                 <br>
                 USD Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$ ${thisCoin.market_data.current_price.usd}
                 <br>
                 USD Market Cap: $ ${thisCoin.market_data.market_cap.usd}
-                <br>
-                <br>
+                <hr>
                 EUR Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;€ ${thisCoin.market_data.current_price.eur}
                 <br>
                 EUR Market Cap: € ${thisCoin.market_data.market_cap.eur}
-                <br>
-                <br>
+                <hr>
                 ILS Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;₪ ${thisCoin.market_data.current_price.ils}
                 <br>
                 ILS Market Cap: ₪ ${thisCoin.market_data.market_cap.ils}
