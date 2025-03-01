@@ -1,6 +1,8 @@
 import { ICoinShort } from "./icoin";
 import { ICoinLong } from "./icoin";
 import { IStorageObj } from "./istorageObj";
+import { Offcanvas } from 'bootstrap';
+import $ from 'jquery';
 
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
@@ -13,23 +15,59 @@ $(() => {
         }
     };
     let globalCoinList: ICoinShort[];
+    let currentPage = 0;
+    const coinsPicked: string[] = [];  
 
-    onPageLoad(coinApiUrl + "list");
-    async function onPageLoad(apiUrl): Promise<void> {
+    async function onPageLoad(apiUrl: string): Promise<void> {
         try {
-            globalCoinList = await fetchData(apiUrl) as ICoinShort[];
-
-            // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-            globalCoinList.splice(100);
-            // console.log(data[1]);
-            populateCards(globalCoinList);
-            // TODO TESTING ONLY, REMOVE BEFORE FINAL PUBLISH 
-
+            setTimeout(async () => {
+                $("#aboutContent").hide();
+                if (!globalCoinList) {
+                    globalCoinList = await fetchData(apiUrl) as ICoinShort[];
+                }
+                // showForwardsBack();
+                populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+            }, 0);
         } catch (error) {
-            alert("something went wrong...")
+            alert("something went wrong...");
+        }
+    }
+    onPageLoad(coinApiUrl + "list");
+
+    function showForwardsBack(isShown: boolean = true): void {
+        if (isShown) {
+            $("#nextPrevDivTop").show();
+            $("#nextPrevDivBottom").show();
+        } else {
+            $("#nextPrevDivTop").hide();
+            $("#nextPrevDivBottom").hide();
         }
     }
 
+    $("a#homeBtn,header>h1, header>img").on("click", () => {
+        $("cardContainerRow").html(`
+            <div id="pageLoadSpinnerDiv" class="text-center">
+                <div class="spinner-grow" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>`);
+        showForwardsBack();
+        onPageLoad(coinApiUrl + "list")
+    });
+
+    $("#btnPrevBottom, #btnPrevTop").on("click", () => {
+        currentPage -= 1;
+        populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+        if (currentPage === 0) {
+            $("#btnPrevBottom, #btnPrevTop").prop("disabled", true);
+        }
+    });
+    $("#btnNextTop, #btnNextBottom").on("click", () => {
+        currentPage += 1;
+        populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+        $("#btnPrevTop").prop("disabled", false);
+        $("#btnPrevBottom").prop("disabled", false);
+    });
 
     async function fetchData(url: string): Promise<ICoinShort[] | ICoinLong> {
         try {
@@ -44,6 +82,18 @@ $(() => {
             alert("Oops! something went wrong...");
         }
     }
+    $("#aboutBtn, #aboutContent>button").on("click", () => {
+        const aboutContent = $("#aboutContent");
+        if (!aboutContent.hasClass("visible")) {
+            aboutContent.slideDown();
+            aboutContent.addClass("visible");
+            $("#homeBtn").prop("disabled",true);
+        } else {
+            aboutContent.slideUp();
+            aboutContent.removeClass("visible");
+        }
+    });
+
 
     function saveDataToLocal(storageObj: object, key: string): void {
         const json = JSON.stringify(storageObj);
@@ -58,39 +108,60 @@ $(() => {
             return false;
         }
     }
-
     function searchIsLoading(isLoading: boolean): void {
         if (isLoading) {
-            $("#searchForm button").html(`Search`);
-            $("#searchForm button").prop("disabled", false);
-        } else {
             $("#searchForm button").html(`
                 <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-                <span role="status">Loading...</span>
-                `);
+                <span role="status">Loading...</span>`);
             $("#searchForm button").prop("disabled", true);
+            $("#searchForm input").prop("disabled", true);
+            $("#cardContainerRow").html(`
+                <div id="pageLoadSpinnerDiv" class="text-center">
+                    <div class="spinner-grow" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>`);
+            showForwardsBack(false);
+        } else {
+            $("#searchForm button").html(`Search`);
+            $("#searchForm button").prop("disabled", false);
+            $("#searchForm input").prop("disabled", false);
         }
+    }
+    $(".form-check-input").on("click", function (): void | Function {
+        console.log(this.id);
+        
+        if (coinsPicked.length = 5) {
+            return showChangeOffcanvas();
+        }
+        coinsPicked.push(this.id);
+    });
+
+    $("#testBtn").on("click", showChangeOffcanvas);
+    function showChangeOffcanvas() {
+        const $offcanvas = $("#changeOffcanvas");
+        const offcanvas = Offcanvas.getInstance($offcanvas[0]);
+        offcanvas.show();
     }
 
     $("form#searchForm").on("submit", function (event) {
         searchIsLoading(true);
         event.preventDefault();
-        const searchTerm = $("input#searchBox").val().toString().toLowerCase();
-        console.log(searchTerm);
-
-        const answerCoins = globalCoinList.filter((coin) => (coin.symbol).toLowerCase().indexOf(searchTerm) >= 0);
-        if (!answerCoins) {
-            alert(`couldn't find Coin '${searchTerm}'`);
-            return;
-        }
-        populateCards(answerCoins.sort((a: ICoinShort, b: ICoinShort) => a.symbol.length - b.symbol.length));
-        $(this).children("input").val('');
-        searchIsLoading(false);
+        setTimeout(() => {
+            const searchTerm = $("input#searchBox").val().toString().toLowerCase();
+            const answerCoins = globalCoinList.filter((coin) => (coin.symbol).toLowerCase().indexOf(searchTerm) >= 0);
+            if (!answerCoins) {
+                alert(`couldn't find Coin '${searchTerm}'`);
+                return;
+            }
+            populateCards(answerCoins.sort((a: ICoinShort, b: ICoinShort) => a.symbol.length - b.symbol.length));
+            $(this).children("input").val('');
+            showForwardsBack(false);
+            searchIsLoading(false);
+        }, 0);
     });
 
-
     $("#cardContainerRow").on("click", "a.btn-more-info", async function (): Promise<void> {
-        // console.log(this);
         if ($(this).hasClass("collapsed")) {
             return;
         }
@@ -117,6 +188,7 @@ $(() => {
             lastLoadedTime: now,
         };
         saveDataToLocal(storageObj, key);
+
         $(`#${thisCoin.id}`).children().children().html(
             `
                 <img class="coin-thumbnail" src="${thisCoin.image.small}">
@@ -149,18 +221,17 @@ $(() => {
         return stringsNum.join(".");
     }
 
-
     function populateCards(data: ICoinShort[]): void {
         let cardHtml = "";
         for (const coin of data) {
             cardHtml +=
-                `<div class="col-auto">
+                `<div class="col-auto 1">
                     <div class="card position-relative" style="width: 18rem;">
                         <div class="card-body">
                             <div
                                 class="form-check form-switch position-absolute top-0 end-0 m-2">
                                 <input class="form-check-input" type="checkbox"
-                                    id="flexSwitchCheck">
+                                    id="${coin.id}-checkBox">
                             </div>
                             <h5 class="card-title">${coin.symbol}</h5>
                             <p class="card-text">${coin.name}</p>

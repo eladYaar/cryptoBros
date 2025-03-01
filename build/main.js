@@ -1,3 +1,4 @@
+import { Offcanvas } from 'bootstrap';
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
     const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
@@ -9,17 +10,56 @@ $(() => {
         }
     };
     let globalCoinList;
-    onPageLoad(coinApiUrl + "list");
+    let currentPage = 0;
+    const coinsPicked = [];
     async function onPageLoad(apiUrl) {
         try {
-            globalCoinList = await fetchData(apiUrl);
-            globalCoinList.splice(100);
-            populateCards(globalCoinList);
+            setTimeout(async () => {
+                $("#aboutContent").hide();
+                if (!globalCoinList) {
+                    globalCoinList = await fetchData(apiUrl);
+                }
+                populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+            }, 0);
         }
         catch (error) {
             alert("something went wrong...");
         }
     }
+    onPageLoad(coinApiUrl + "list");
+    function showForwardsBack(isShown = true) {
+        if (isShown) {
+            $("#nextPrevDivTop").show();
+            $("#nextPrevDivBottom").show();
+        }
+        else {
+            $("#nextPrevDivTop").hide();
+            $("#nextPrevDivBottom").hide();
+        }
+    }
+    $("a#homeBtn,header>h1, header>img").on("click", () => {
+        $("cardContainerRow").html(`
+            <div id="pageLoadSpinnerDiv" class="text-center">
+                <div class="spinner-grow" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>`);
+        showForwardsBack();
+        onPageLoad(coinApiUrl + "list");
+    });
+    $("#btnPrevBottom, #btnPrevTop").on("click", () => {
+        currentPage -= 1;
+        populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+        if (currentPage === 0) {
+            $("#btnPrevBottom, #btnPrevTop").prop("disabled", true);
+        }
+    });
+    $("#btnNextTop, #btnNextBottom").on("click", () => {
+        currentPage += 1;
+        populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
+        $("#btnPrevTop").prop("disabled", false);
+        $("#btnPrevBottom").prop("disabled", false);
+    });
     async function fetchData(url) {
         try {
             const response = await fetch(url, optionsForFetch);
@@ -34,6 +74,18 @@ $(() => {
             alert("Oops! something went wrong...");
         }
     }
+    $("#aboutBtn, #aboutContent>button").on("click", () => {
+        const aboutContent = $("#aboutContent");
+        if (!aboutContent.hasClass("visible")) {
+            aboutContent.slideDown();
+            aboutContent.addClass("visible");
+            $("#homeBtn").prop("disabled", true);
+        }
+        else {
+            aboutContent.slideUp();
+            aboutContent.removeClass("visible");
+        }
+    });
     function saveDataToLocal(storageObj, key) {
         const json = JSON.stringify(storageObj);
         localStorage.setItem(key, json);
@@ -49,30 +101,53 @@ $(() => {
     }
     function searchIsLoading(isLoading) {
         if (isLoading) {
-            $("#searchForm button").html(`Search`);
-            $("#searchForm button").prop("disabled", false);
-        }
-        else {
             $("#searchForm button").html(`
                 <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-                <span role="status">Loading...</span>
-                `);
+                <span role="status">Loading...</span>`);
             $("#searchForm button").prop("disabled", true);
+            $("#searchForm input").prop("disabled", true);
+            $("#cardContainerRow").html(`
+                <div id="pageLoadSpinnerDiv" class="text-center">
+                    <div class="spinner-grow" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>`);
+            showForwardsBack(false);
         }
+        else {
+            $("#searchForm button").html(`Search`);
+            $("#searchForm button").prop("disabled", false);
+            $("#searchForm input").prop("disabled", false);
+        }
+    }
+    $(".form-check-input").on("click", function () {
+        console.log(this.id);
+        if (coinsPicked.length = 5) {
+            return showChangeOffcanvas();
+        }
+        coinsPicked.push(this.id);
+    });
+    $("#testBtn").on("click", showChangeOffcanvas);
+    function showChangeOffcanvas() {
+        const $offcanvas = $("#changeOffcanvas");
+        const offcanvas = Offcanvas.getInstance($offcanvas[0]);
+        offcanvas.show();
     }
     $("form#searchForm").on("submit", function (event) {
         searchIsLoading(true);
         event.preventDefault();
-        const searchTerm = $("input#searchBox").val().toString().toLowerCase();
-        console.log(searchTerm);
-        const answerCoins = globalCoinList.filter((coin) => (coin.symbol).toLowerCase().indexOf(searchTerm) >= 0);
-        if (!answerCoins) {
-            alert(`couldn't find Coin '${searchTerm}'`);
-            return;
-        }
-        populateCards(answerCoins.sort((a, b) => a.symbol.length - b.symbol.length));
-        $(this).children("input").val('');
-        searchIsLoading(false);
+        setTimeout(() => {
+            const searchTerm = $("input#searchBox").val().toString().toLowerCase();
+            const answerCoins = globalCoinList.filter((coin) => (coin.symbol).toLowerCase().indexOf(searchTerm) >= 0);
+            if (!answerCoins) {
+                alert(`couldn't find Coin '${searchTerm}'`);
+                return;
+            }
+            populateCards(answerCoins.sort((a, b) => a.symbol.length - b.symbol.length));
+            $(this).children("input").val('');
+            showForwardsBack(false);
+            searchIsLoading(false);
+        }, 0);
     });
     $("#cardContainerRow").on("click", "a.btn-more-info", async function () {
         if ($(this).hasClass("collapsed")) {
@@ -134,13 +209,13 @@ $(() => {
         let cardHtml = "";
         for (const coin of data) {
             cardHtml +=
-                `<div class="col-auto">
+                `<div class="col-auto 1">
                     <div class="card position-relative" style="width: 18rem;">
                         <div class="card-body">
                             <div
                                 class="form-check form-switch position-absolute top-0 end-0 m-2">
                                 <input class="form-check-input" type="checkbox"
-                                    id="flexSwitchCheck">
+                                    id="${coin.id}-checkBox">
                             </div>
                             <h5 class="card-title">${coin.symbol}</h5>
                             <p class="card-text">${coin.name}</p>
@@ -176,4 +251,3 @@ $(() => {
         $("#cardContainerRow").html(cardHtml);
     }
 });
-export {};

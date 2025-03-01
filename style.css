@@ -23,11 +23,12 @@ nav {
     background-color: white;
     margin-top: 1vh;
     margin-bottom: 2vh;
+    border-radius: 5px;
 }
 
 nav .collapsing,
 nav .collapse {
-    margin-top: 2vh;
+    margin-top: 1vh;
 }
 
 nav #homeBtn {
@@ -36,6 +37,15 @@ nav #homeBtn {
 
 nav .nav-link {
     color: rgb(68, 109, 136);
+}
+
+nav #searchForm button .spinner-grow {
+    justify-self: center;
+}
+
+nav #searchForm button {
+    display: flex;
+    color: #1e303c;
 }
 
 /* ======================================= */
@@ -64,6 +74,7 @@ nav .nav-link {
 .card .card-text {
     min-height: 5vh;
 }
+
 /* ======================================= */
 /* toggle Button */
 .form-check-input {
@@ -81,6 +92,7 @@ nav .nav-link {
     position: absolute;
     z-index: 1000;
     background: white;
+    border-radius: 5px;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -94,6 +106,7 @@ nav .nav-link {
     background-color: rgb(68, 109, 136) !important;
     border: rgb(68, 109, 136) 1px solid !important;
 }
+
 
 /* ======================================= */
 body {
@@ -116,8 +129,95 @@ body {
     width: 5rem !important;
     height: 5rem !important;
 }
+
 /* ================================================ */
 /* attribution */
 #attribution {
-    margin-right:40px ;
+    margin-right: 40px;
+    margin-top: 10px;
 }
+
+/* ================================================ */
+/* go to top button */
+#goToTop {
+    position: fixed;
+    top: 95%;
+    right: 2%;
+}
+
+#goToTop>a>img {
+    max-width: 45px;
+    border: black solid 1px;
+    border-radius: 25px;
+    padding: 5px;
+}
+
+/* nextPrevDiv */
+
+.nextPrevDiv {
+    margin: 15px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.nextPrevDiv>button {
+    background-color: #1e303c !important;
+    border: #1e303c 1px solid !important;
+}
+
+/* Parallax */
+
+.parallax {
+    background-image: url(assets/images/wallpaperflare.com_wallpaper.jpg);
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+/* About Page */
+
+#aboutContent {
+    margin-top: 75px;
+    transform: translateY(20px);
+    position: absolute;
+    z-index: 1001;
+    background-color: rgb(42, 68, 85);
+    border-radius: 5px;
+    color: rgb(248, 249, 250);
+    opacity: 90%;
+    /* transition: 0.3s; */
+
+}
+
+#aboutContent p {
+    max-width: 700px;
+}
+
+#aboutContent button {
+    background: 0;
+    border: 0;
+    border-radius: 25px;
+    position: absolute;
+    right: 0;
+    transition: 0.3s;
+}
+
+#aboutContent button:hover {
+    background-color: black;
+    transition: 0.3s;
+}
+
+#aboutContent button img {
+    max-width: 25px;
+}
+
+#aboutContent>img {
+    max-height: 150px;
+    border-radius: 5px;
+}
+
+/* Graph */
+

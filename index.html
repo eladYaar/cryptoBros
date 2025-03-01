@@ -19,8 +19,8 @@
             crossorigin="anonymous"></script>
         <script type="module" src="build/main.js"></script>
     </head>
-    <body>
-        <header>
+    <body class="parallax">
+        <header for="homeBtn">
             <img src="assets/images/CryptoBros2.png" alt>
             <h1>cryptoBros</h1>
         </header>
@@ -45,7 +45,7 @@
                             <a class="nav-link" href="#">Live Reports</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
+                            <a id="aboutBtn" class="nav-link" href="#">About</a>
                         </li>
                     </ul>
                     <form id="searchForm" class="d-flex" role="search">
@@ -62,6 +62,41 @@
             Powered by
             <a href="https://www.coingecko.com/en/api">CoinGecko API</a>
         </div>
+        <div id="goToTop">
+            <a href="#" class="btn">
+                <img src="assets/images/up.png" alt="">
+            </a>
+        </div>
+        <div id="nextPrevDivTop" class="nextPrevDiv text-center">
+            <button id="btnPrevTop" class="btn btn-primary" disabled> <-Previous
+            </button>
+            <button id="btnNextTop" class="btn btn-primary"> Next-> </button>
+        </div>
+        <div id="graphContainer">
+
+        </div>
+        <div
+            class="text-center d-flex justify-content-center align-items-center">
+            <div id="aboutContent">
+                <button> <img src="assets/images/pngwing.com-modified.png"
+                        alt></button>
+                <h3>A Little About the Developer:</h3>
+                <img
+                    src="assets/images/WhatsApp Image 2025-02-25 at 11.16.21_447aaf703.jpg">
+                <p>
+                    My name is Elad Yaar, I currently am studying fullstack
+                    development in JohnBryce.
+                </p>
+                <h3>A Little About This Website:</h3>
+                <p class="text-wrap">
+                    This is a simple cryptocurrency lookup app, to lookup
+                    different values according to different classical currencies
+                    using TS and jQuery.
+                </p>
+
+            </div>
+
+        </div>
         <div class="container d-flex flex-wrap p-0">
             <div id="cardContainerRow" class="row g-0 row-cols-3">
                 <div id="pageLoadSpinnerDiv" class="text-center">
@@ -69,7 +104,6 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-
                 <!-- card START -->
                 <!-- <div class="col-auto">
                     <div class="card position-relative" style="width: 18rem;">
@@ -114,7 +148,22 @@
                 <!-- card END -->
             </div>
         </div>
-
+        <div id="nextPrevDivBottom" class="nextPrevDiv text-center">
+            <button id="btnPrevBottom" class="btn btn-primary" disabled>
+                <-Previous </button>
+            <button id="btnNextBottom" class="btn btn-primary"> Next-> </button>
+        </div>
+          
+        <div id="changeOffcanvas" class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="staticBackdropLabel">Offcanvas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+                I will not close if you click outside of me.
+                </div>
+            </div>
+        </div>
     </body>
-
 </html>

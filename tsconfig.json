@@ -3,5 +3,7 @@
         "target": "ES2024",
         "outDir": "build",
         "removeComments": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
     }
 }
