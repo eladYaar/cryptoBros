@@ -1,8 +1,7 @@
 import { ICoinShort } from "./icoin";
 import { ICoinLong } from "./icoin";
 import { IStorageObj } from "./istorageObj";
-import { Offcanvas } from 'bootstrap';
-import $ from 'jquery';
+
 
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
@@ -139,9 +138,7 @@ $(() => {
 
     $("#testBtn").on("click", showChangeOffcanvas);
     function showChangeOffcanvas() {
-        const $offcanvas = $("#changeOffcanvas");
-        const offcanvas = Offcanvas.getInstance($offcanvas[0]);
-        offcanvas.show();
+
     }
 
     $("form#searchForm").on("submit", function (event) {

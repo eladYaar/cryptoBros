@@ -1,4 +1,3 @@
-import { Offcanvas } from 'bootstrap';
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
     const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
@@ -129,9 +128,6 @@ $(() => {
     });
     $("#testBtn").on("click", showChangeOffcanvas);
     function showChangeOffcanvas() {
-        const $offcanvas = $("#changeOffcanvas");
-        const offcanvas = Offcanvas.getInstance($offcanvas[0]);
-        offcanvas.show();
     }
     $("form#searchForm").on("submit", function (event) {
         searchIsLoading(true);
@@ -251,3 +247,4 @@ $(() => {
         $("#cardContainerRow").html(cardHtml);
     }
 });
+export {};
