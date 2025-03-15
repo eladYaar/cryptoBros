@@ -13,8 +13,8 @@ $(() => {
     const coinsPicked = [];
     async function onPageLoad(apiUrl) {
         try {
+            $("#aboutContent").hide();
             setTimeout(async () => {
-                $("#aboutContent").hide();
                 if (!globalCoinList) {
                     globalCoinList = await fetchData(apiUrl);
                 }
@@ -36,6 +36,15 @@ $(() => {
             $("#nextPrevDivBottom").hide();
         }
     }
+    $('input.form-check-input').on('change', function () {
+        console.log("working");
+        if (this.checked) {
+            console.log(`Checkbox ${this.id} is checked`);
+        }
+        else {
+            console.log(`Checkbox ${this.id} is unchecked`);
+        }
+    });
     $("a#homeBtn,header>h1, header>img").on("click", () => {
         $("cardContainerRow").html(`
             <div id="pageLoadSpinnerDiv" class="text-center">
@@ -118,16 +127,6 @@ $(() => {
             $("#searchForm button").prop("disabled", false);
             $("#searchForm input").prop("disabled", false);
         }
-    }
-    $(".form-check-input").on("click", function () {
-        console.log(this.id);
-        if (coinsPicked.length = 5) {
-            return showChangeOffcanvas();
-        }
-        coinsPicked.push(this.id);
-    });
-    $("#testBtn").on("click", showChangeOffcanvas);
-    function showChangeOffcanvas() {
     }
     $("form#searchForm").on("submit", function (event) {
         searchIsLoading(true);

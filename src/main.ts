@@ -1,8 +1,6 @@
-import { ICoinShort } from "./icoin";
-import { ICoinLong } from "./icoin";
-import { IStorageObj } from "./istorageObj";
-
-
+// import $ from "jquery";
+import { ICoinShort, ICoinLong } from "./interfaces/icoin";
+import { IStorageObj } from "./interfaces/istorageObj";
 $(() => {
     const coinApiUrl = "https://api.coingecko.com/api/v3/coins/";
     const coinGeckoAPIKey = "CG-v2oSfCSuHJMbKSjaZ6dJr6hn";
@@ -19,12 +17,11 @@ $(() => {
 
     async function onPageLoad(apiUrl: string): Promise<void> {
         try {
+            $("#aboutContent").hide();
             setTimeout(async () => {
-                $("#aboutContent").hide();
                 if (!globalCoinList) {
                     globalCoinList = await fetchData(apiUrl) as ICoinShort[];
                 }
-                // showForwardsBack();
                 populateCards(globalCoinList.slice(100 * currentPage, 100 * (currentPage + 1)));
             }, 0);
         } catch (error) {
@@ -42,7 +39,53 @@ $(() => {
             $("#nextPrevDivBottom").hide();
         }
     }
+    // $("#testBtn").on("click",() => {graph()})
+    // function graph(...dataPointsSets) {
+            
+    //         const dataPoints1 = [
+    //             { x: new Date(2023, 0, 1), y: 450 },
+    //             { x: new Date(2023, 1, 1), y: 414 },
+    //             { x: new Date(2023, 2, 1), y: 520 }
+    //       ];
+        
+    //       const dataPoints2 = [
+    //         { x: new Date(2023, 0, 1), y: 480 },
+    //         { x: new Date(2023, 1, 1), y: 399 },
+    //         { x: new Date(2023, 2, 1), y: 530 }
+    //       ];
+        // const chart = new CanvasJS.Chart("chartContainer", {
+        //     title: {
+        //         text:"aaa"
+        //     },
+        //     axisY: {
+        //         title:"y"
+        //     },
+        //     axisY2: {
+        //         title:"y2"
+        //     },
+        //     data: [{
+        //         type: "line",
+        //         dataPoints: dataPoints1
+        //       }, {
+        //         type: "line",
+        //         axisYType: "secondary",
+        //         dataPoints: dataPoints2
+        //     }]
+        // });
+    
+    //     chart.render();
+    // }
 
+    $('input.form-check-input').on('change', function() { // this doesnt seem to work, could figure out why
+        console.log("working");
+        
+        if((this as HTMLInputElement).checked) {
+          console.log(`Checkbox ${this.id} is checked`);
+        } else {
+          console.log(`Checkbox ${this.id} is unchecked`);
+        }
+      });
+    
     $("a#homeBtn,header>h1, header>img").on("click", () => {
         $("cardContainerRow").html(`
             <div id="pageLoadSpinnerDiv" class="text-center">
@@ -127,20 +170,7 @@ $(() => {
             $("#searchForm input").prop("disabled", false);
         }
     }
-    $(".form-check-input").on("click", function (): void | Function {
-        console.log(this.id);
         
-        if (coinsPicked.length = 5) {
-            return showChangeOffcanvas();
-        }
-        coinsPicked.push(this.id);
-    });
-
-    $("#testBtn").on("click", showChangeOffcanvas);
-    function showChangeOffcanvas() {
-
-    }
-
     $("form#searchForm").on("submit", function (event) {
         searchIsLoading(true);
         event.preventDefault();
