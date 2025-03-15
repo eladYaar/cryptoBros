@@ -3,7 +3,6 @@ export interface ICoinShort {
     symbol: string;
     name: string;
 }
-
 export interface ICoinLong {
     id: string;
     symbol: string;
@@ -23,6 +22,5 @@ export interface ICoinLong {
             eur: number,
             ils: number,    
         }
-
     }
 }
